@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Student Hub - Modern, responsive Student Management System dashboard and API client.">
+    <title>StudentHub | Management Portal</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app" class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <span class="logo-icon">🎓</span>
+                    <div class="logo-text">
+                        <h2>Student<span class="highlight">Hub</span></h2>
+                        <span class="version-tag">v2.0 Portal</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Main Menu</div>
+                <a href="#dashboard" class="nav-item active" id="nav-dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+                <a href="#students" class="nav-item" id="nav-students">
+                    <span class="nav-icon">👨‍🎓</span>
+                    <span class="nav-label">Students Directory</span>
+                    <span class="badge" id="badge-student-count">0</span>
+                </a>
+                <a href="#departments" class="nav-item" id="nav-departments">
+                    <span class="nav-icon">🏛️</span>
+                    <span class="nav-label">Departments</span>
+                </a>
+
+                <div class="nav-section-title">System & Settings</div>
+                <button class="nav-item nav-btn" id="btn-open-settings" type="button">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-label">API Config</span>
+                </button>
+                <a href="http://127.0.0.1:8000/admin/" target="_blank" rel="noreferrer" class="nav-item">
+                    <span class="nav-icon">🛡️</span>
+                    <span class="nav-label">Django Admin</span>
+                    <span class="nav-ext">↗</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="server-status-pill" id="server-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Checking API...</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-wrapper">
+            <!-- Top Navbar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="sidebar-toggle" id="btn-toggle-sidebar" aria-label="Toggle Navigation Menu">
+                        <span>☰</span>
+                    </button>
+                    <div class="breadcrumbs">
+                        <span class="breadcrumb-item">Workspace</span>
+                        <span class="breadcrumb-separator">/</span>
+                        <span class="breadcrumb-item active" id="current-view-title">Dashboard</span>
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    <!-- Quick Actions -->
+                    <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                    <button class="btn btn-outline" id="btn-export-csv" title="Export to CSV">
+                        <span>📥</span> Export CSV
+                    </button>
+                    <button class="btn btn-primary" id="btn-add-student-modal">
+                        <span class="btn-icon">＋</span> Add Student
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main Content Container -->
+            <main class="content-container">
+                <!-- Banner / Welcome Section -->
+                <section class="welcome-banner">
+                    <div class="banner-content">
+                        <span class="welcome-badge">Student Management System</span>
+                        <h1 class="page-title">Welcome back, Administrator</h1>
+                        <p class="page-subtitle">Real-time student registry, records analytics, and academic department directory.</p>
+                    </div>
+                    <div class="banner-actions">
+                        <button class="btn btn-glass" id="btn-refresh-data" title="Refresh Live Data">
+                            <span class="refresh-icon">🔄</span> Sync Data
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Statistics Metrics Grid -->
+                <section class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper bg-blue">
+                            <span class="stat-icon">👥</span>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Students</span>
+                            <h3 class="stat-value" id="stat-total-students">0</h3>
+                            <span class="stat-trend positive">● Live synchronized</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper bg-purple">
+                            <span class="stat-icon">🏫</span>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Departments</span>
+                            <h3 class="stat-value" id="stat-total-departments">0</h3>
+                            <span class="stat-trend neutral">Active academic branches</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper bg-emerald">
+                            <span class="stat-icon">📅</span>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Average Year</span>
+                            <h3 class="stat-value" id="stat-avg-year">-</h3>
+                            <span class="stat-trend positive">Academic cohorts</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper bg-amber">
+                            <span class="stat-icon">⚡</span>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">API Health</span>
+                            <h3 class="stat-value" id="stat-api-status">Connecting...</h3>
+                            <span class="stat-trend" id="stat-api-endpoint">http://127.0.0.1:8000</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Student Management Directory Section -->
+                <section class="card directory-card">
+                    <!-- Directory Toolbar -->
+                    <div class="card-header">
+                        <div class="header-title-group">
+                            <h2>Student Registry</h2>
+                            <p class="text-muted">Manage, search, edit, and organize enrolled students.</p>
+                        </div>
+
+                        <div class="view-toggles">
+                            <button class="view-btn active" id="view-table-btn" title="Table View">☰</button>
+                            <button class="view-btn" id="view-grid-btn" title="Card Grid View">⊞</button>
+                        </div>
+                    </div>
+
+                    <!-- Search and Filters Bar -->
+                    <div class="filters-bar">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="search-input" placeholder="Search by name, student ID, email, department..." autocomplete="off">
+                            <button class="clear-search-btn" id="btn-clear-search" title="Clear Search">✕</button>
+                        </div>
+
+                        <div class="filter-controls">
+                            <select id="filter-department" class="custom-select" aria-label="Filter by department">
+                                <option value="">All Departments</option>
+                            </select>
+
+                            <select id="filter-year" class="custom-select" aria-label="Filter by academic year">
+                                <option value="">All Years</option>
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                                <option value="4">4th Year</option>
+                            </select>
+
+                            <select id="sort-by" class="custom-select" aria-label="Sort students">
+                                <option value="name-asc">Sort: Name (A-Z)</option>
+                                <option value="name-desc">Sort: Name (Z-A)</option>
+                                <option value="id-asc">Sort: ID (Ascending)</option>
+                                <option value="id-desc">Sort: ID (Descending)</option>
+                                <option value="year-asc">Sort: Year (1-4)</option>
+                                <option value="year-desc">Sort: Year (4-1)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Students Table View -->
+                    <div class="table-responsive" id="table-container">
+                        <table class="data-table" id="students-table">
+                            <thead>
+                                <tr>
+                                    <th># ID</th>
+                                    <th>Student Info</th>
+                                    <th>Contact Email</th>
+                                    <th>Department</th>
+                                    <th>Academic Year</th>
+                                    <th>Phone</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="students-table-body">
+                                <!-- Dynamically populated -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Students Grid View (Hidden by default) -->
+                    <div class="grid-view-container hidden" id="grid-container">
+                        <div class="students-grid" id="students-grid-body">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+
+                    <!-- Empty / Loading States -->
+                    <div class="state-container hidden" id="loading-state">
+                        <div class="spinner"></div>
+                        <p class="state-text">Loading student records from server...</p>
+                    </div>
+
+                    <div class="state-container hidden" id="empty-state">
+                        <div class="empty-icon">📂</div>
+                        <h3 class="empty-title">No Students Found</h3>
+                        <p class="empty-desc" id="empty-state-message">No student records match your filter criteria.</p>
+                        <button class="btn btn-primary" id="btn-empty-add-student">Add First Student</button>
+                    </div>
+
+                    <div class="state-container hidden" id="error-state">
+                        <div class="error-icon">⚠️</div>
+                        <h3 class="error-title">Backend Connection Required</h3>
+                        <p class="error-desc" id="error-state-message">Could not reach Django API at <code>http://127.0.0.1:8000/api/students/</code>.</p>
+                        <div class="state-actions">
+                            <button class="btn btn-primary" id="btn-retry-connection">Retry Connection</button>
+                            <button class="btn btn-outline" id="btn-load-demo-data">Load Demo Records</button>
+                            <button class="btn btn-secondary" id="btn-configure-api">Change API URL</button>
+                        </div>
+                    </div>
+
+                    <!-- Table Footer / Pagination Info -->
+                    <div class="card-footer">
+                        <span class="footer-info" id="footer-record-count">Showing 0 of 0 students</span>
+                        <div class="footer-actions">
+                            <button class="btn btn-sm btn-outline" id="btn-quick-sync">Refresh List</button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- ADD / EDIT STUDENT MODAL -->
+    <div class="modal-backdrop hidden" id="student-modal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Add New Student</h3>
+                <button class="modal-close-btn" id="btn-close-student-modal" aria-label="Close modal">✕</button>
+            </div>
+            <form id="student-form" novalidate>
+                <input type="hidden" id="form-student-pk" value="">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="form-student-id">Student ID <span class="required">*</span></label>
+                            <input type="text" id="form-student-id" placeholder="e.g. STU-2026-001" required>
+                            <small class="form-hint">Unique institutional ID or roll number.</small>
+                            <div class="invalid-feedback">Student ID is required.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-name">Full Name <span class="required">*</span></label>
+                            <input type="text" id="form-name" placeholder="e.g. Alex Morgan" required>
+                            <div class="invalid-feedback">Full name is required.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-email">Email Address <span class="required">*</span></label>
+                            <input type="email" id="form-email" placeholder="e.g. alex.morgan@univ.edu" required>
+                            <div class="invalid-feedback">A valid email address is required.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-department">Department / Major <span class="required">*</span></label>
+                            <input type="text" id="form-department" placeholder="e.g. Computer Science" list="department-datalist" required>
+                            <datalist id="department-datalist">
+                                <option value="Computer Science">
+                                <option value="Information Technology">
+                                <option value="Electrical Engineering">
+                                <option value="Mechanical Engineering">
+                                <option value="Business Administration">
+                                <option value="Data Science">
+                            </datalist>
+                            <div class="invalid-feedback">Department name is required.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-year">Academic Year <span class="required">*</span></label>
+                            <select id="form-year" required>
+                                <option value="">Select Year</option>
+                                <option value="1">1st Year (Freshman)</option>
+                                <option value="2">2nd Year (Sophomore)</option>
+                                <option value="3">3rd Year (Junior)</option>
+                                <option value="4">4th Year (Senior)</option>
+                            </select>
+                            <div class="invalid-feedback">Please select an academic year.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-phone">Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="form-phone" placeholder="e.g. +1 (555) 234-5678" required>
+                            <div class="invalid-feedback">Contact phone number is required.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-student-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-student">
+                        <span class="btn-text">Save Student</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- DELETE CONFIRMATION MODAL -->
+    <div class="modal-backdrop hidden" id="delete-modal">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-header modal-header-danger">
+                <h3 class="modal-title">Delete Student Record</h3>
+                <button class="modal-close-btn" id="btn-close-delete-modal" aria-label="Close modal">✕</button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="danger-icon-badge">🗑️</div>
+                <h4 class="danger-prompt">Are you sure?</h4>
+                <p class="text-muted" id="delete-modal-text">This will permanently delete the student record for <strong id="delete-student-name"></strong>.</p>
+                <div class="delete-warning-box">
+                    <span>⚠️ This action cannot be undone.</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btn-cancel-delete">Cancel</button>
+                <button type="button" class="btn btn-danger" id="btn-confirm-delete">Delete Record</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- API CONFIGURATION MODAL -->
+    <div class="modal-backdrop hidden" id="settings-modal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title">⚙️ Backend API Configuration</h3>
+                <button class="modal-close-btn" id="btn-close-settings-modal" aria-label="Close modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">Configure the base URL for the Django REST Framework backend API.</p>
+                <div class="form-group">
+                    <label for="settings-api-url">Backend Base URL</label>
+                    <input type="url" id="settings-api-url" value="http://127.0.0.1:8000" placeholder="http://127.0.0.1:8000">
+                    <small class="form-hint">Default local Django development server runs on <code>http://127.0.0.1:8000</code>.</small>
+                </div>
+                <div class="api-info-box">
+                    <strong>Expected API Endpoints:</strong>
+                    <ul>
+                        <li><code>GET /api/students/</code> - Fetch all students</li>
+                        <li><code>POST /api/students/</code> - Create a new student</li>
+                        <li><code>PUT /api/students/{id}/</code> - Update student</li>
+                        <li><code>DELETE /api/students/{id}/</code> - Delete student</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btn-reset-api-url">Reset Default</button>
+                <button type="button" class="btn btn-primary" id="btn-save-api-url">Save & Test Connection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
